@@ -1,0 +1,289 @@
+================================================================================
+                    FIRST STEPS TO GET THE SYSTEM RUNNING
+                            (Follow in Order)
+================================================================================
+
+BEFORE YOU START:
+- Make sure MySQL is installed and running
+- Make sure Node.js v14+ is installed
+- Make sure npm is installed
+- Have the project folder open in your editor
+
+================================================================================
+STEP 1: SETUP DATABASE (2-3 minutes)
+================================================================================
+
+1. Open MySQL Command Line or Workbench
+2. Copy and run this command:
+
+   mysql -u root -p < database/schema_isro_complete.sql
+
+   (It will prompt for password - enter your MySQL password)
+
+3. Then run this command:
+
+   mysql -u root -p astrolink_agency < database/isro_data_complete.sql
+
+   (It will prompt for password again)
+
+4. Verify it worked by running:
+
+   mysql -u root -p astrolink_agency -e "SELECT COUNT(*) FROM missions;"
+
+   Should show: 40+ missions
+
+✅ Database is now ready with 40+ ISRO missions!
+
+================================================================================
+STEP 2: SETUP BACKEND (2-3 minutes)
+================================================================================
+
+1. Open a NEW Command Prompt/Terminal window
+
+2. Navigate to backend folder:
+   cd backend
+
+3. Install dependencies:
+   npm install
+
+4. Create .env file with these contents (copy from .env.example):
+   
+   DB_HOST=localhost
+   DB_USER=root
+   DB_PASSWORD=      (your MySQL password)
+   DB_NAME=astrolink_agency
+   PORT=5000
+   NODE_ENV=development
+   CORS_ORIGIN=http://localhost:3000
+
+5. Start the backend:
+   npm run dev
+
+   You should see:
+   ✓ Database connected successfully
+   Server running on http://localhost:5000
+
+✅ Backend is now running!
+
+================================================================================
+STEP 3: SETUP FRONTEND (2-3 minutes)
+================================================================================
+
+1. Open ANOTHER NEW Command Prompt/Terminal window
+
+2. Navigate to frontend folder:
+   cd frontend
+
+3. Install dependencies:
+   npm install
+
+4. Start the frontend:
+   npm start
+
+   Your browser will automatically open http://localhost:3000
+
+   You should see the AstroLink Agency app load!
+
+✅ Frontend is now running!
+
+================================================================================
+STEP 4: QUICK TEST (1 minute)
+================================================================================
+
+1. You should now have:
+   - MySQL running (database)
+   - Backend running on http://localhost:5000
+   - Frontend running on http://localhost:3000
+
+2. Go to the Commands page (or Anomalies page)
+
+3. Click the dropdown that says "-- Select a Mission --"
+
+4. You'll see 40+ ISRO missions!
+
+5. Select "INSAT-3D" mission
+
+6. Watch as:
+   ✓ Mission details auto-populate
+   ✓ Satellites auto-load
+   ✓ Ground stations auto-load
+   ✓ Statistics appear
+
+✅ System is working perfectly!
+
+================================================================================
+WHAT YOU CAN DO NOW
+================================================================================
+
+Try These:
+
+1. CREATE A COMMAND
+   - Go to Commands page
+   - Select a mission (e.g., INSAT-3D)
+   - Select a satellite
+   - Click a command template (e.g., "System Health Check")
+   - Click "Send Command"
+   - See the command in the table below
+
+2. REPORT AN ANOMALY
+   - Go to Anomalies page
+   - Select a mission
+   - Select a satellite
+   - Click an anomaly template (e.g., "Battery Voltage Degradation")
+   - Fill in severity and details
+   - Click "Report Anomaly"
+   - See it appear in the table
+
+3. EXPLORE DATA
+   - Select different missions
+   - See different satellites
+   - View different ground stations
+   - Check statistics
+
+================================================================================
+IF SOMETHING DOESN'T WORK
+================================================================================
+
+DATABASE NOT CONNECTING?
+
+1. Is MySQL running?
+   - Windows: Check Services (press Windows+R, type services.msc)
+   - Or open MySQL Workbench
+
+2. Is password correct in .env?
+   - Update DB_PASSWORD with your actual MySQL password
+
+3. Did the schema/data import succeed?
+   - Check: mysql -u root -p astrolink_agency -e "SELECT COUNT(*) FROM missions;"
+   - Should return 40+
+
+BACKEND WON'T START?
+
+1. Is Node.js installed?
+   - Check: node --version (should be v14+)
+
+2. Did npm install complete?
+   - Delete node_modules folder
+   - Run: npm install again
+
+3. Is port 5000 already in use?
+   - Try: netstat -ano | findstr :5000
+   - Kill the process or change PORT in .env
+
+FRONTEND WON'T LOAD?
+
+1. Is backend running?
+   - Check: http://localhost:5000/api/health
+   - Should return: {"status":"OK"...}
+
+2. Is npm install complete?
+   - Delete node_modules folder
+   - Run: npm install again
+
+3. Is API URL correct?
+   - Check: frontend/.env has REACT_APP_API_URL=http://localhost:5000/api
+
+SEE FULL TROUBLESHOOTING IN:
+→ QUICK_START_COMPLETE.md "Troubleshooting" section
+
+================================================================================
+NEXT: READ DOCUMENTATION
+================================================================================
+
+Now that system is running, read these in order:
+
+1. QUICK_START_COMPLETE.md (15 min read)
+   - Understand what each component does
+   - See all API endpoints
+   - Review features
+
+2. SYSTEM_SUMMARY.md (20 min read)
+   - Understand architecture
+   - See what's in database
+   - Understand data flow
+
+3. ISRO_SYSTEM_COMPLETE_SETUP.md (30 min read)
+   - Comprehensive setup guide
+   - All configuration options
+   - Production deployment
+
+================================================================================
+KEY FOLDER LOCATIONS
+================================================================================
+
+Database Setup:
+→ database/schema_isro_complete.sql
+→ database/isro_data_complete.sql
+
+Backend Code:
+→ backend/server.js (main server)
+→ backend/routes/ (all API endpoints)
+→ backend/config/database.js (database connection)
+→ backend/.env (your configuration)
+
+Frontend Code:
+→ frontend/src/pages/Commands.jsx (Commands page)
+→ frontend/src/pages/Anomalies.jsx (Anomalies page)
+→ frontend/src/styles/ (CSS styling)
+→ frontend/src/api/config.js (API client)
+
+Documentation:
+→ README_ISRO_SYSTEM.md (system overview)
+→ QUICK_START_COMPLETE.md (⭐ read this)
+→ ISRO_SYSTEM_COMPLETE_SETUP.md (comprehensive)
+→ SYSTEM_SUMMARY.md (architecture)
+→ IMPLEMENTATION_CHECKLIST.md (deployment)
+
+================================================================================
+COMMON COMMANDS YOU'LL USE
+================================================================================
+
+Start Backend:
+cd backend && npm run dev
+
+Start Frontend:
+cd frontend && npm start
+
+Check Database:
+mysql -u root -p astrolink_agency -e "SELECT COUNT(*) FROM missions;"
+
+Check Backend Health:
+curl http://localhost:5000/api/health
+
+Kill Process on Port:
+Windows: taskkill /PID <PID> /F
+Mac/Linux: kill -9 <PID>
+
+Restart Everything:
+1. Stop frontend (Ctrl+C in frontend terminal)
+2. Stop backend (Ctrl+C in backend terminal)
+3. Restart backend: cd backend && npm run dev
+4. Restart frontend: cd frontend && npm start
+
+================================================================================
+YOU'RE ALL SET!
+================================================================================
+
+✅ System is running
+✅ Database has 40+ ISRO missions
+✅ Backend API is serving data
+✅ Frontend is displaying everything
+✅ You can create commands and anomalies
+
+Next Step:
+→ Explore the application
+→ Read QUICK_START_COMPLETE.md
+→ Understand the architecture
+→ Plan any customizations
+
+Questions?
+→ Check documentation files
+→ Review code comments
+→ Check IMPLEMENTATION_CHECKLIST.md
+
+Ready to deploy to production?
+→ Read ISRO_SYSTEM_COMPLETE_SETUP.md Section 12
+
+Happy coding! 🚀
+
+================================================================================

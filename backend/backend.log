@@ -1,0 +1,7 @@
+Ignoring invalid configuration option passed to Connection: keepAliveInitialDelayMs. This is currently a warning, but in future versions of MySQL2, an error will be thrown if you pass an invalid configuration option to a Connection
+AstroLink Agency API Server running on port 5000
+Environment: development
+⏭️  ISRO already exists
+⏭️  NASA already exists
+⏭️  ESA already exists
+✅ Organizations initialized successfully

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anomaly Details - AstroLink Agency</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        body {
+            background: #1a2841;
+            color: #e0e0e0;
+        }
+        
+        .details-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(0, 188, 212, 0.3);
+            padding-bottom: 1rem;
+        }
+        
+        .details-header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            color: white;
+        }
+        
+        .back-btn {
+            background: #1e3a5f;
+            color: #00bcd4;
+            border: 1px solid #00bcd4;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: #00bcd4;
+            color: #1e3a5f;
+        }
+        
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .detail-card {
+            background: rgba(30, 58, 95, 0.8);
+            border: 1px solid rgba(0, 188, 212, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .detail-card h3 {
+            color: #00bcd4;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            border-bottom: 1px solid rgba(0, 188, 212, 0.3);
+            padding-bottom: 0.5rem;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(200, 200, 200, 0.1);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #00bcd4;
+            min-width: 150px;
+        }
+        
+        .detail-value {
+            color: #ffffff;
+            text-align: right;
+            flex: 1;
+        }
+        
+        .severity-high {
+            color: #ff6b6b;
+        }
+        
+        .severity-medium {
+            color: #ffd93d;
+        }
+        
+        .severity-low {
+            color: #6bcf7f;
+        }
+        
+        .severity-critical {
+            color: #ff3333;
+            font-weight: bold;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: #00bcd4;
+        }
+        
+        .error {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+            padding: 1rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="details-container">
+        <div class="details-header">
+            <h1>Anomaly Details</h1>
+            <button class="back-btn" onclick="window.history.back()">← Back</button>
+        </div>
+
+        <div id="anomalyDetails" class="loading">Loading anomaly details...</div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        async function loadAnomalyDetails() {
+            const params = new URLSearchParams(window.location.search);
+            const anomalyId = params.get('id');
+
+            if (!anomalyId) {
+                document.getElementById('anomalyDetails').innerHTML = '<div class="error">No anomaly ID provided</div>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/anomalies/${anomalyId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch anomaly details');
+                const data = await response.json();
+                const anomaly = data.data;
+
+                const severityClass = `severity-${(anomaly.severity || 'low').toLowerCase()}`;
+
+                document.getElementById('anomalyDetails').innerHTML = `
+                    <div class="details-grid">
+                        <div class="detail-card">
+                            <h3>Anomaly Information</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">Type:</span>
+                                <span class="detail-value">${anomaly.anomaly_type || 'N/A'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Severity:</span>
+                                <span class="detail-value ${severityClass}">${anomaly.severity || 'Unknown'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Anomaly ID:</span>
+                                <span class="detail-value">${anomaly.anomaly_id || 'N/A'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Mission ID:</span>
+                                <span class="detail-value">${anomaly.mission_id || 'N/A'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Satellite ID:</span>
+                                <span class="detail-value">${anomaly.satellite_id || 'N/A'}</span>
+                            </div>
+                        </div>
+
+                        <div class="detail-card">
+                             <h3>Status & Timeline</h3>
+                             <div class="detail-row">
+                                  <span class="detail-label">Resolution Status:</span>
+                                  <span class="detail-value">${anomaly.is_resolved ? 'Resolved' : 'Unresolved'}</span>
+                             </div>
+                             <div class="detail-row">
+                                  <span class="detail-label">Detected:</span>
+                                  <span class="detail-value">${new Date(anomaly.detected_at).toLocaleString() || 'N/A'}</span>
+                             </div>
+
+                             <div class="detail-row">
+                                  <span class="detail-label">Status:</span>
+                                  <span class="detail-value">${anomaly.resolved_at ? 'Resolved' : 'Active'}</span>
+                             </div>
+                         </div>
+
+                        <div class="detail-card" style="grid-column: 1 / -1;">
+                            <h3>Description</h3>
+                            <p style="margin: 0; line-height: 1.6; color: #ffffff;">
+                                ${anomaly.description || 'No description available'}
+                            </p>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading anomaly details:', error);
+                document.getElementById('anomalyDetails').innerHTML = `
+                    <div class="error">Error loading anomaly details: ${error.message}</div>
+                `;
+            }
+        }
+
+        // Load anomaly details on page load
+        document.addEventListener('DOMContentLoaded', loadAnomalyDetails);
+    </script>
+</body>
+</html>

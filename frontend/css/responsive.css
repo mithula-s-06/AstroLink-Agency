@@ -1,0 +1,236 @@
+/* Responsive Design */
+
+@media (max-width: 768px) {
+    /* Hamburger Menu */
+    .hamburger {
+        display: flex;
+    }
+
+    .nav-menu {
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        flex-direction: column;
+        gap: 0;
+        margin: 0;
+        padding: 1rem 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .nav-menu.active {
+        max-height: 300px;
+    }
+
+    .nav-link {
+        padding: 0.75rem 2rem;
+    }
+
+    /* Hero */
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+    }
+
+    .hero-buttons .btn {
+        width: 100%;
+    }
+
+    /* About Section */
+    .about-section h2,
+    .features-section h2,
+    .contact-section h2 {
+        font-size: 2rem;
+    }
+
+    /* Auth Card */
+    .auth-card {
+        padding: 2rem;
+        max-width: 100%;
+    }
+
+    /* Dashboard */
+    .dashboard-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 1rem 0;
+    }
+
+    .sidebar-link {
+        padding: 0.75rem 1.5rem;
+    }
+
+    .dashboard-content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
+
+    .feature-card,
+    .about-item,
+    .contact-item {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Navbar */
+    .nav-container {
+        padding: 0 1rem;
+    }
+
+    .nav-logo {
+        font-size: 1.2rem;
+    }
+
+    .logo-icon {
+        font-size: 1.5rem;
+    }
+
+    /* Hero */
+    .hero {
+        padding: 50px 1rem;
+        min-height: 300px;
+    }
+
+    .hero-content h1 {
+        font-size: 1.5rem;
+    }
+
+    .hero-content p {
+        font-size: 0.9rem;
+    }
+
+    /* Sections */
+    .about-section,
+    .features-section,
+    .contact-section {
+        padding: 40px 1rem;
+    }
+
+    .about-section h2,
+    .features-section h2,
+    .contact-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Auth */
+    .auth-container {
+        padding: 1rem;
+    }
+
+    .auth-card {
+        padding: 1.5rem;
+    }
+
+    .auth-card h2 {
+        font-size: 1.5rem;
+    }
+
+    /* Dashboard */
+    .nav-user {
+        gap: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .btn-small {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    .dashboard-content {
+        padding: 0.5rem;
+    }
+
+    .dashboard-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .list-item {
+        padding: 1rem;
+    }
+
+    .list-item h3 {
+        font-size: 1rem;
+    }
+
+    .mission-form {
+        padding: 1rem;
+    }
+
+    .form-section {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+    }
+
+    .form-section h3 {
+        font-size: 1.1rem;
+    }
+
+    .toast {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 320px) {
+    .nav-logo {
+        font-size: 1rem;
+    }
+
+    .logo-icon {
+        font-size: 1.2rem;
+    }
+
+    .hero-content h1 {
+        font-size: 1.2rem;
+    }
+
+    .btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+    }
+}

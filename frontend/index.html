@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstroLink Agency - Space Operations Management</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal active">
+        <div class="modal-content">
+            <!-- Login Form -->
+            <div id="loginContainer" class="auth-container active">
+                <div class="auth-header">
+                    <h1>🛰️ AstroLink Agency</h1>
+                    <p>Sign in to access this site</p>
+                </div>
+
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="loginEmail">Email Address</label>
+                        <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary full-width">Sign In</button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="#" onclick="switchToSignup(event)">Create one</a></p>
+                </div>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signupContainer" class="auth-container">
+                <div class="auth-header">
+                    <h1>🛰️ AstroLink Agency</h1>
+                    <p>Create your account</p>
+                </div>
+
+                <form id="signupForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="signupName">Full Name</label>
+                        <input type="text" id="signupName" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupEmail">Email Address</label>
+                        <input type="email" id="signupEmail" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" id="signupPassword" placeholder="Min 8 chars: uppercase, lowercase, number, special char" required>
+                        <small>Password: uppercase, lowercase, number, special char (@$!%*?&)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupConfirmPassword">Confirm Password</label>
+                        <input type="password" id="signupConfirmPassword" placeholder="Confirm your password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupRole">Role</label>
+                        <select id="signupRole" required>
+                            <option value="">Select role</option>
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary full-width">Create Account</button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="#" onclick="switchToLogin(event)">Sign in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard hidden">
+        <!-- Top Navigation -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <div class="navbar-brand">
+                    <span class="logo">🛰️</span>
+                    <span class="title">AstroLink</span>
+                </div>
+                <div class="navbar-user">
+                    <span id="userDisplay"></span>
+                    <button class="btn btn-small btn-logout" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Container -->
+        <div class="dashboard-container">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="menu-item active" data-view="overview">📊 Overview</a></li>
+                    <li><a href="#" class="menu-item" data-view="missions">🚀 Missions</a></li>
+                    <li><a href="#" class="menu-item" data-view="satellites">🛰️ Satellites</a></li>
+                    <li><a href="#" class="menu-item" data-view="anomalies">⚠️ Anomalies</a></li>
+                    <li id="adminMenuSection" class="hidden">
+                        <a href="#" class="menu-item" data-view="add-mission">➕ Add Mission</a>
+                    </li>
+                </ul>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="content">
+                <!-- Overview View -->
+                <div id="overviewView" class="view active">
+                    <h2>Dashboard Overview</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">🚀</div>
+                            <div class="stat-info">
+                                <h3>Total Missions</h3>
+                                <p id="statMissions" class="stat-value">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🛰️</div>
+                            <div class="stat-info">
+                                <h3>Active Satellites</h3>
+                                <p id="statSatellites" class="stat-value">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⚠️</div>
+                            <div class="stat-info">
+                                <h3>Unresolved Issues</h3>
+                                <p id="statAnomalies" class="stat-value">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📡</div>
+                            <div class="stat-info">
+                                <h3>Ground Stations</h3>
+                                <p id="statStations" class="stat-value">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Missions View -->
+                <div id="missionsView" class="view">
+                    <h2>Missions</h2>
+                    <div id="missionsList" class="items-list"></div>
+                </div>
+
+                <!-- Satellites View -->
+                <div id="satellitesView" class="view">
+                    <h2>Satellites</h2>
+                    <div id="satellitesList" class="items-list"></div>
+                </div>
+
+                <!-- Anomalies View -->
+                <div id="anomaliesView" class="view">
+                    <h2>Anomalies</h2>
+                    <div id="anomaliesList" class="items-list"></div>
+                </div>
+
+                <!-- Add Mission View -->
+                <div id="addMissionView" class="view">
+                    <h2>Create New Mission</h2>
+                    <form id="addMissionForm" class="mission-form">
+                        <div class="form-section">
+                            <h3>Mission Details</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Mission Name *</label>
+                                    <input type="text" id="missionName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Type *</label>
+                                    <select id="missionType" required>
+                                        <option value="">Select type</option>
+                                        <option value="Earth Orbit">Earth Orbit</option>
+                                        <option value="Deep Space">Deep Space</option>
+                                        <option value="Lunar">Lunar</option>
+                                        <option value="Planetary">Planetary</option>
+                                        <option value="Communications">Communications</option>
+                                        <option value="Weather">Weather</option>
+                                        <option value="Navigation">Navigation</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Start Date *</label>
+                                    <input type="date" id="missionStart" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>End Date *</label>
+                                    <input type="date" id="missionEnd" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Organization *</label>
+                                    <select id="missionOrg" required></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select id="missionStatus">
+                                        <option value="Planning">Planning</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Completed">Completed</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea id="missionDesc" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Satellites</h3>
+                            <div id="satellitesContainer">
+                                <div class="dynamic-item">
+                                    <input type="text" class="sat-name" placeholder="Satellite name">
+                                    <select class="sat-type">
+                                        <option value="LEO">LEO</option>
+                                        <option value="MEO">MEO</option>
+                                        <option value="GEO">GEO</option>
+                                    </select>
+                                    <button type="button" class="btn-remove" onclick="removeSatellite(this)">Remove</button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary" onclick="addSatellite()">+ Add Satellite</button>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Ground Stations</h3>
+                            <div id="stationsContainer">
+                                <div class="dynamic-item">
+                                    <input type="text" class="gs-name" placeholder="Station name">
+                                    <input type="text" class="gs-code" placeholder="Station code">
+                                    <button type="button" class="btn-remove" onclick="removeStation(this)">Remove</button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary" onclick="addStation()">+ Add Station</button>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Create Mission</button>
+                            <button type="button" class="btn btn-secondary" onclick="switchView('missions')">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

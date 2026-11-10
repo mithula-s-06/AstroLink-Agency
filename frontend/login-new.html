@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AstroLink Agency</title>
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Left Side -->
+        <div class="auth-left">
+            <div class="auth-left-header">
+                <span class="auth-left-logo">🛰️</span>
+                <div>
+                    <h1>AstroLink</h1>
+                    <p>Space Operations Hub</p>
+                </div>
+            </div>
+
+            <div class="auth-left-content">
+                <div class="auth-left-intro">
+                    <h2>Welcome to AstroLink Agency</h2>
+                    <p>
+                        Your premier platform for managing space missions, satellites, and ground station operations. 
+                        Real-time monitoring and control of all your space assets in one unified dashboard.
+                    </p>
+                </div>
+
+                <ul class="auth-features">
+                    <li>
+                        <span class="auth-features-icon">🚀</span>
+                        <div class="auth-features-text">
+                            <h3>Mission Management</h3>
+                            <p>Plan, monitor, and control space missions with precision</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="auth-features-icon">🛰️</span>
+                        <div class="auth-features-text">
+                            <h3>Satellite Tracking</h3>
+                            <p>Real-time tracking of all orbital satellites</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="auth-features-icon">📡</span>
+                        <div class="auth-features-text">
+                            <h3>Ground Stations</h3>
+                            <p>Manage communication with ground stations worldwide</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="auth-features-icon">⚠️</span>
+                        <div class="auth-features-text">
+                            <h3>Anomaly Detection</h3>
+                            <p>Instant alerts for system anomalies and issues</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Side -->
+        <div class="auth-right">
+            <div class="auth-form-container">
+                <div class="auth-form-header">
+                    <h2>Login</h2>
+                    <p>Welcome back! Please enter your credentials</p>
+                </div>
+
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="loginEmail">Email Address</label>
+                        <input type="email" id="loginEmail" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    </div>
+
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe">Remember me</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="signup-new.html">Create one</a></p>
+                    <p><a href="#">Forgot password?</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+</body>
+</html>

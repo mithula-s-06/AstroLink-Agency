@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - AstroLink Agency</title>
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Left Side -->
+        <div class="auth-left">
+            <div class="auth-left-header">
+                <span class="auth-left-logo">🛰️</span>
+                <div>
+                    <h1>AstroLink</h1>
+                    <p>Space Operations Hub</p>
+                </div>
+            </div>
+
+            <div class="auth-left-content">
+                <div class="auth-left-intro">
+                    <h2>Join AstroLink Agency</h2>
+                    <p>
+                        Create your account and gain access to the most advanced space operations 
+                        management platform. Control missions, monitor satellites, and manage 
+                        ground stations all from one place.
+                    </p>
+                </div>
+
+                <ul class="auth-features">
+                    <li>
+                        <span class="auth-features-icon">✓</span>
+                        <div class="auth-features-text">
+                            <h3>Instant Access</h3>
+                            <p>Get started immediately after sign up</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="auth-features-icon">🔒</span>
+                        <div class="auth-features-text">
+                            <h3>Secure Platform</h3>
+                            <p>Enterprise-grade security for your data</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="auth-features-icon">👥</span>
+                        <div class="auth-features-text">
+                            <h3>Team Collaboration</h3>
+                            <p>Work with your team in real-time</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="auth-features-icon">📊</span>
+                        <div class="auth-features-text">
+                            <h3>Advanced Analytics</h3>
+                            <p>Comprehensive insights into your operations</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Side -->
+        <div class="auth-right">
+            <div class="auth-form-container">
+                <div class="auth-form-header">
+                    <h2>Create Account</h2>
+                    <p>Join AstroLink Agency today</p>
+                </div>
+
+                <form id="signupForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="signupName">Full Name</label>
+                        <input type="text" id="signupName" placeholder="John Doe" required>
+                        <span class="error-message" id="nameError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupEmail">Email Address</label>
+                        <input type="email" id="signupEmail" placeholder="you@example.com" required>
+                        <span class="error-message" id="emailError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" id="signupPassword" placeholder="Min 8 characters" required>
+                        <small>Include uppercase, lowercase, number, and special character (@$!%*?&)</small>
+                        <span class="error-message" id="passwordError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupConfirmPassword">Confirm Password</label>
+                        <input type="password" id="signupConfirmPassword" placeholder="Confirm your password" required>
+                        <span class="error-message" id="confirmPasswordError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupRole">Role</label>
+                        <select id="signupRole" required>
+                            <option value="">Select your role</option>
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                        <span class="error-message" id="roleError"></span>
+                    </div>
+
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="agreeTerms" required>
+                        <label for="agreeTerms">I agree to the Terms & Conditions</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="login-new.html">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+</body>
+</html>

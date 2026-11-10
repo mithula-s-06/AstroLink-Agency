@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AstroLink Agency</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: #1a1f3a;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .modal-header h2 {
+            color: white;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: white;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            color: #333;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #999;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn-edit, .btn-delete {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-edit {
+            background-color: #667eea;
+            color: white;
+        }
+        .btn-edit:hover {
+            opacity: 0.8;
+        }
+        .btn-delete {
+            background-color: var(--danger);
+            color: white;
+        }
+        .btn-delete:hover {
+            opacity: 0.8;
+        }
+        .hidden-admin {
+            display: none;
+        }
+        .admin-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .btn-add {
+            background-color: #667eea;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .btn-add:hover {
+            opacity: 0.8;
+        }
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 0.5rem;
+            border-radius: 4px;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <div class="navbar-brand">
+                    <span class="logo">🛰️</span>
+                    <span class="title">AstroLink Agency</span>
+                </div>
+                <div class="navbar-user">
+                    <span id="userDisplay">Operator</span>
+                    <span id="userRole" style="margin: 0 1rem; font-size: 0.9rem; color: #ffffff;"></span>
+                    <button class="btn btn-small btn-logout" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Container -->
+        <div class="dashboard-container">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="menu-item active" data-view="overview">📊 Overview</a></li>
+                    <li><a href="#" class="menu-item" data-view="missions">🚀 Missions</a></li>
+                    <li><a href="#" class="menu-item" data-view="satellites">🛰️ Satellites</a></li>
+                    <li><a href="#" class="menu-item" data-view="groundstations">📡 Ground Stations</a></li>
+                    <li><a href="#" class="menu-item" data-view="anomalies">⚠️ Anomalies</a></li>
+                    <li><a href="#" class="menu-item" data-view="crewlogs">📝 Crew Logs</a></li>
+                    <li><a href="#" class="menu-item" data-view="telemetry">📈 Telemetry</a></li>
+                    <li id="usersMenuAdmin" class="hidden-admin"><a href="#" class="menu-item" data-view="users">👥 Users</a></li>
+                </ul>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="content">
+                <!-- Overview View -->
+                <div id="overviewView" class="view active">
+                    <h2>Dashboard Overview</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">🚀</div>
+                            <div class="stat-info">
+                                <h3>Total Missions</h3>
+                                <p class="stat-value" id="totalMissions">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🛰️</div>
+                            <div class="stat-info">
+                                <h3>Active Satellites</h3>
+                                <p class="stat-value" id="totalSatellites">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⚠️</div>
+                            <div class="stat-info">
+                                <h3>Anomalies</h3>
+                                <p class="stat-value" id="totalAnomalies">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📡</div>
+                            <div class="stat-info">
+                                <h3>Ground Stations</h3>
+                                <p class="stat-value" id="totalStations">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📝</div>
+                            <div class="stat-info">
+                                <h3>Crew Logs</h3>
+                                <p class="stat-value" id="totalCrewLogs">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-info">
+                                <h3>Telemetry</h3>
+                                <p class="stat-value" id="totalTelemetry">0</p>
+                            </div>
+                        </div>
+                        </div>
+
+                        <!-- About Section -->
+                        <div style="margin-top: 3rem; padding: 2rem; background-color: #f5f5f5; border-radius: 8px; border-left: 4px solid var(--accent-cyan);">
+                            <h3 style="color: #333; margin-bottom: 1rem;">About AstroLink Agency</h3>
+                            <p style="color: #666; line-height: 1.6; margin-bottom: 1rem;">
+                                AstroLink Agency is a comprehensive space mission management platform designed to streamline the control and monitoring of satellite missions, ground operations, and crew activities across multiple organizations including ISRO, NASA, and ESA.
+                            </p>
+                            <h4 style="color: #333; margin-bottom: 0.8rem;">Key Features:</h4>
+                            <ul style="color: #666; line-height: 1.8; margin-left: 2rem;">
+                                <li><strong>Mission Management:</strong> Plan, track, and manage complex space missions with budget tracking and status monitoring</li>
+                                <li><strong>Satellite Operations:</strong> Monitor satellite health, battery status, operational life, and orbital information</li>
+                                <li><strong>Ground Station Control:</strong> Manage ground stations worldwide with uptime tracking and antenna specifications</li>
+                                <li><strong>Anomaly Detection:</strong> Track and respond to system anomalies with severity levels and automated alerts</li>
+                                <li><strong>Crew Logging:</strong> Maintain detailed crew activity logs with timestamps, roles, and task documentation</li>
+                                <li><strong>Telemetry Monitoring:</strong> Real-time satellite telemetry including altitude, velocity, temperature, and signal strength</li>
+                            </ul>
+                            <p style="color: #666; line-height: 1.6; margin-top: 1rem;">
+                                Use the navigation menu on the left to access different modules and manage your space operations efficiently.
+                            </p>
+                        </div>
+                        </div>
+
+                        <!-- Missions View -->
+                <div id="missionsView" class="view">
+                    <h2>Missions</h2>
+                    <div id="adminControlsMissions" class="admin-controls hidden-admin">
+                        <button class="btn-add" onclick="openAddMissionModal()">+ Add Mission</button>
+                    </div>
+                    <div id="missionsList" class="items-list">
+                        <div class="loading">Loading missions...</div>
+                    </div>
+                </div>
+
+                <!-- Satellites View -->
+                <div id="satellitesView" class="view">
+                    <h2>Satellites</h2>
+                    <div id="adminControlsSatellites" class="admin-controls hidden-admin">
+                        <button class="btn-add" onclick="openAddSatelliteModal()">+ Add Satellite</button>
+                    </div>
+                    <div id="satellitesList" class="items-list">
+                        <div class="loading">Loading satellites...</div>
+                    </div>
+                </div>
+
+                <!-- Ground Stations View -->
+                <div id="groundstationsView" class="view">
+                    <h2>Ground Stations</h2>
+                    <div id="adminControlsGroundStations" class="admin-controls hidden-admin">
+                        <button class="btn-add" onclick="openAddGroundStationModal()">+ Add Ground Station</button>
+                    </div>
+                    <div id="groundstationsList" class="items-list">
+                        <div class="loading">Loading ground stations...</div>
+                    </div>
+                </div>
+
+                <!-- Anomalies View -->
+                <div id="anomaliesView" class="view">
+                    <h2>Anomalies</h2>
+                    <div id="adminControlsAnomalies" class="admin-controls hidden-admin">
+                        <button class="btn-add" onclick="openAddAnomalyModal()">+ Add Anomaly</button>
+                    </div>
+                    <div id="anomaliesList" class="items-list">
+                        <div class="loading">Loading anomalies...</div>
+                    </div>
+                </div>
+
+                <!-- Crew Logs View -->
+                <div id="crewlogsView" class="view">
+                    <h2>Crew Logs</h2>
+                    <div id="adminControlsCrewLogs" class="admin-controls hidden-admin">
+                        <button class="btn-add" onclick="openAddCrewLogModal()">+ Add Crew Log</button>
+                    </div>
+                    <div id="crewlogsList" class="items-list" style="grid-template-columns: 1fr;">
+                        <div class="loading">Loading crew logs...</div>
+                    </div>
+                </div>
+
+                <!-- Telemetry View -->
+                <div id="telemetryView" class="view">
+                    <h2>Telemetry Data</h2>
+                    <div id="adminControlsTelemetry" class="admin-controls hidden-admin">
+                        <button class="btn-add" onclick="openAddTelemetryModal()">+ Add Telemetry</button>
+                    </div>
+                    <div id="telemetryList" class="items-list">
+                        <div class="loading">Loading telemetry...</div>
+                    </div>
+                </div>
+
+                <!-- Users View (Admin Only) -->
+                <div id="usersView" class="view">
+                    <h2>User Management</h2>
+                    <div id="usersList" style="overflow-x: auto;">
+                        <div class="loading">Loading users...</div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    
+    <!-- Add/Edit Mission Modal -->
+    <div id="missionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="missionModalTitle">Add Mission</h2>
+                <button class="modal-close" onclick="closeMissionModal()">&times;</button>
+            </div>
+            <form id="missionForm">
+                <div class="form-group">
+                    <label for="mission_name">Mission Name *</label>
+                    <input type="text" id="mission_name" name="mission_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="mission_type">Mission Type *</label>
+                    <select id="mission_type" name="mission_type" required>
+                        <option>Earth Orbit</option>
+                        <option>Deep Space</option>
+                        <option>Lunar</option>
+                        <option>Planetary</option>
+                        <option>Communications</option>
+                        <option>Weather</option>
+                        <option>Navigation</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="mission_status">Status</label>
+                    <select id="mission_status" name="mission_status">
+                        <option>Planning</option>
+                        <option>Active</option>
+                        <option>In Progress</option>
+                        <option>Completed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="start_date">Start Date *</label>
+                    <input type="date" id="start_date" name="start_date" required>
+                </div>
+                <div class="form-group">
+                    <label for="end_date">End Date *</label>
+                    <input type="date" id="end_date" name="end_date" required>
+                </div>
+                <div class="form-group">
+                    <label for="mission_description">Description</label>
+                    <textarea id="mission_description" name="mission_description"></textarea>
+                </div>
+                <div class="form-group">
+                     <label for="budget">Budget ($)</label>
+                     <input type="number" id="budget" name="budget" step="0.01">
+                   </div>
+                <div class="form-group">
+                    <label for="org_id">Organization *</label>
+                    <select id="org_id" name="org_id" required>
+                        <option value="">Select an organization</option>
+                        <option value="1">ISRO</option>
+                        <option value="2">NASA</option>
+                        <option value="3">ESA</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="missionSubmitBtn">Create Mission</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeMissionModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Satellite Modal -->
+    <div id="satelliteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="satelliteModalTitle">Add Satellite</h2>
+                <button class="modal-close" onclick="closeSatelliteModal()">&times;</button>
+            </div>
+            <form id="satelliteForm">
+                <div class="form-group">
+                    <label for="satellite_name">Satellite Name *</label>
+                    <input type="text" id="satellite_name" name="satellite_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="satellite_type">Satellite Type *</label>
+                    <select id="satellite_type" name="satellite_type" required>
+                        <option value="">Select Type</option>
+                        <option value="LEO">LEO</option>
+                        <option value="MEO">MEO</option>
+                        <option value="GEO">GEO</option>
+                        <option value="Polar">Polar</option>
+                        <option value="Sun-Synchronous">Sun-Synchronous</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="norad_id">NORAD ID</label>
+                    <input type="text" id="norad_id" name="norad_id">
+                </div>
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status">
+                        <option>Pre-Launch</option>
+                        <option>In Orbit</option>
+                        <option>Decommissioned</option>
+                        <option>Lost</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="launch_date">Launch Date</label>
+                    <input type="date" id="launch_date" name="launch_date">
+                </div>
+                <div class="form-group">
+                    <label for="weight_kg">Weight (kg)</label>
+                    <input type="number" id="weight_kg" name="weight_kg" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="current_battery_percentage">Battery %</label>
+                    <input type="number" id="current_battery_percentage" name="current_battery_percentage" min="0" max="100">
+                </div>
+                <div class="form-group">
+                    <label for="operational_life_years">Operational Life (years)</label>
+                    <input type="number" id="operational_life_years" name="operational_life_years" step="0.1">
+                </div>
+                <div class="form-group">
+                     <label for="mission_id">Mission ID</label>
+                     <input type="number" id="mission_id" name="mission_id">
+                 </div>
+                 <div class="form-actions">
+                     <button type="submit" class="btn btn-primary" id="satelliteSubmitBtn">Create Satellite</button>
+                     <button type="button" class="btn btn-secondary" onclick="closeSatelliteModal()">Cancel</button>
+                 </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Ground Station Modal -->
+    <div id="groundstationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="groundstationModalTitle">Add Ground Station</h2>
+                <button class="modal-close" onclick="closeGroundStationModal()">&times;</button>
+            </div>
+            <form id="groundstationForm">
+                <div class="form-group">
+                    <label for="station_name">Station Name *</label>
+                    <input type="text" id="station_name" name="station_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="station_code">Station Code</label>
+                    <input type="text" id="station_code" name="station_code">
+                </div>
+                <div class="form-group">
+                    <label for="latitude">Latitude</label>
+                    <input type="number" id="latitude" name="latitude" step="0.0001">
+                </div>
+                <div class="form-group">
+                    <label for="longitude">Longitude</label>
+                    <input type="number" id="longitude" name="longitude" step="0.0001">
+                </div>
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <input type="text" id="country" name="country">
+                </div>
+                <div class="form-group">
+                    <label for="antenna_type">Antenna Type</label>
+                    <input type="text" id="antenna_type" name="antenna_type">
+                </div>
+                <div class="form-group">
+                    <label for="gs_status">Status</label>
+                    <select id="gs_status" name="status">
+                        <option>Active</option>
+                        <option>Inactive</option>
+                        <option>Maintenance</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="uptime_percentage">Uptime %</label>
+                    <input type="number" id="uptime_percentage" name="uptime_percentage" min="0" max="100" step="0.1">
+                </div>
+                <div class="form-group">
+                     <label for="mission_id_gs">Mission ID</label>
+                     <input type="number" id="mission_id_gs" name="mission_id">
+                 </div>
+                 <div class="form-actions">
+                     <button type="submit" class="btn btn-primary" id="groundstationSubmitBtn">Create Ground Station</button>
+                     <button type="button" class="btn btn-secondary" onclick="closeGroundStationModal()">Cancel</button>
+                 </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Anomaly Modal -->
+    <div id="anomalyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="anomalyModalTitle">Add Anomaly</h2>
+                <button class="modal-close" onclick="closeAnomalyModal()">&times;</button>
+            </div>
+            <form id="anomalyForm">
+                <div class="form-group">
+                    <label for="anomaly_type">Anomaly Type *</label>
+                    <input type="text" id="anomaly_type" name="anomaly_type" required>
+                </div>
+                <div class="form-group">
+                    <label for="severity">Severity *</label>
+                    <select id="severity" name="severity" required>
+                        <option>Low</option>
+                        <option>Medium</option>
+                        <option>High</option>
+                        <option>Critical</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="mission_id_anom">Mission ID</label>
+                    <input type="number" id="mission_id_anom" name="mission_id">
+                </div>
+                <div class="form-group">
+                     <label for="satellite_id_anom">Satellite ID</label>
+                     <input type="number" id="satellite_id_anom" name="satellite_id">
+                 </div>
+                 <div class="form-actions">
+                     <button type="submit" class="btn btn-primary" id="anomalySubmitBtn">Create Anomaly</button>
+                     <button type="button" class="btn btn-secondary" onclick="closeAnomalyModal()">Cancel</button>
+                 </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Crew Log Modal -->
+    <div id="crewlogModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="crewlogModalTitle">Add Crew Log</h2>
+                <button class="modal-close" onclick="closeCrewLogModal()">&times;</button>
+            </div>
+            <form id="crewlogForm">
+                <div class="form-group">
+                    <label for="mission_id_crew">Mission ID</label>
+                    <input type="number" id="mission_id_crew" name="mission_id" required>
+                </div>
+                <div class="form-group">
+                    <label for="satellite_id_crew">Satellite ID (Optional)</label>
+                    <input type="number" id="satellite_id_crew" name="satellite_id">
+                </div>
+                <div class="form-group">
+                    <label for="crew_member_name">Crew Member Name</label>
+                    <input type="text" id="crew_member_name" name="crew_member_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="crew_member_role">Crew Member Role</label>
+                    <input type="text" id="crew_member_role" name="crew_member_role">
+                </div>
+                <div class="form-group">
+                    <label for="log_date">Log Date</label>
+                    <input type="date" id="log_date" name="log_date" required>
+                </div>
+                <div class="form-group">
+                    <label for="log_time">Log Time</label>
+                    <input type="time" id="log_time" name="log_time">
+                </div>
+                <div class="form-group">
+                    <label for="log_description">Description</label>
+                    <textarea id="log_description" name="log_description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="activity_type">Activity Type</label>
+                    <input type="text" id="activity_type" name="activity_type">
+                </div>
+                <div class="form-group">
+                    <label for="duration_hours">Duration (hours)</label>
+                    <input type="number" id="duration_hours" name="duration_hours" step="0.5">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="crewlogSubmitBtn">Create Crew Log</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeCrewLogModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Telemetry Modal -->
+    <div id="telemetryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="telemetryModalTitle">Add Telemetry</h2>
+                <button class="modal-close" onclick="closeTelemetryModal()">&times;</button>
+            </div>
+            <form id="telemetryForm">
+                <div class="form-group">
+                    <label for="satellite_id_telem">Satellite ID *</label>
+                    <input type="number" id="satellite_id_telem" name="satellite_id" placeholder="e.g., 1" required>
+                </div>
+                <div class="form-group">
+                    <label for="altitude">Altitude (km)</label>
+                    <input type="number" id="altitude" name="altitude" placeholder="e.g., 408" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="velocity">Velocity (m/s)</label>
+                    <input type="number" id="velocity" name="velocity" placeholder="e.g., 7660" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="battery_percentage">Battery (%)</label>
+                    <input type="number" id="battery_percentage" name="battery_percentage" placeholder="e.g., 85" step="0.01" min="0" max="100">
+                </div>
+                <div class="form-group">
+                    <label for="cpu_temperature_celsius">CPU Temperature (°C)</label>
+                    <input type="number" id="cpu_temperature_celsius" name="cpu_temperature_celsius" placeholder="e.g., 45" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="signal_strength_dbm">Signal Strength (dBm)</label>
+                    <input type="number" id="signal_strength_dbm" name="signal_strength_dbm" placeholder="e.g., -75" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="link_quality_percentage">Link Quality (%)</label>
+                    <input type="number" id="link_quality_percentage" name="link_quality_percentage" placeholder="e.g., 92" step="0.01" min="0" max="100">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="telemetrySubmitBtn">Create Telemetry</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeTelemetryModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Update User Role Modal -->
+    <div id="updateRoleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Update User Role</h2>
+                <button class="modal-close" onclick="closeUpdateRoleModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>User: <span id="updateRoleUserName"></span></label>
+                <input type="hidden" id="updateRoleUserId">
+            </div>
+            <div class="form-group">
+                <label for="updateRoleSelect">New Role *</label>
+                <select id="updateRoleSelect" required>
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-primary" onclick="updateUserRoleAction()">Update Role</button>
+                <button type="button" class="btn btn-secondary" onclick="closeUpdateRoleModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Mission Image Modal -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Mission Image</h2>
+                <button class="modal-close" onclick="closeImageModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="quickImageUrl">Image URL</label>
+                <input type="url" id="quickImageUrl" placeholder="https://example.com/image.jpg">
+                <img id="quickImagePreview" class="image-preview" style="display: none; margin-top: 1rem;" alt="Image Preview">
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-primary" onclick="saveQuickImage()">Save Image</button>
+                <button type="button" class="btn btn-secondary" onclick="closeImageModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

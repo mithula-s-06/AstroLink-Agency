@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Details - AstroLink Agency</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        html, body {
+            background: #1a2841 !important;
+            color: #e0e0e0 !important;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .details-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(0, 188, 212, 0.3);
+            padding-bottom: 1rem;
+        }
+        
+        .details-header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            color: white;
+        }
+
+        .details-grid,
+        .detail-card,
+        .detail-item,
+        .detail-label,
+        .detail-value,
+        .list-item,
+        .list-item-title,
+        .list-item-text,
+        .section-title,
+        p,
+        #missionId {
+            color: white !important;
+        }
+        
+        .back-btn {
+            background: #1e3a5f;
+            color: #00bcd4;
+            border: 1px solid #00bcd4;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: #00bcd4;
+            color: #1e3a5f;
+        }
+        
+        .mission-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .mission-image:hover {
+            opacity: 0.8;
+        }
+        
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .detail-card {
+            background: rgba(30, 58, 95, 0.8);
+            border: 1px solid rgba(0, 188, 212, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .detail-card h3 {
+            color: #00bcd4;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            border-bottom: 1px solid rgba(0, 188, 212, 0.3);
+            padding-bottom: 0.5rem;
+        }
+        
+        .detail-item {
+            margin: 0.8rem 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #90caf9;
+        }
+        
+        .detail-value {
+            color: #e0e0e0;
+            text-align: right;
+        }
+        
+        .section {
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: #00bcd4;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid rgba(0, 188, 212, 0.3);
+            padding-bottom: 0.5rem;
+        }
+        
+        .list-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        
+        .list-item {
+            background: rgba(30, 58, 95, 0.6);
+            border: 1px solid rgba(0, 188, 212, 0.2);
+            border-radius: 6px;
+            padding: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .list-item:hover {
+            background: rgba(30, 58, 95, 0.9);
+            border-color: rgba(0, 188, 212, 0.5);
+        }
+
+        .list-item-image {
+            margin-top: 0.5rem;
+        }
+
+        .list-item-image img {
+            width: 100%;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .list-item-image img:hover {
+            opacity: 0.8;
+        }
+
+        .view-image-btn {
+            margin-top: 0.5rem;
+            padding: 0.4rem 0.8rem;
+            background: rgba(0, 188, 212, 0.2);
+            border: 1px solid rgba(0, 188, 212, 0.5);
+            color: #00bcd4;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .view-image-btn:hover {
+            background: rgba(0, 188, 212, 0.3);
+            border-color: #00bcd4;
+        }
+        
+        .list-item-title {
+            font-weight: 600;
+            color: #00bcd4;
+            margin-bottom: 0.5rem;
+        }
+        
+        .list-item-text {
+            font-size: 0.9rem;
+            color: #b0bec5;
+            margin: 0.3rem 0;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #90caf9;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-completed {
+            background: rgba(76, 175, 80, 0.3);
+            color: #81c784;
+        }
+        
+        .status-active {
+            background: rgba(33, 150, 243, 0.3);
+            color: #42a5f5;
+        }
+        
+        .status-planning {
+            background: rgba(255, 152, 0, 0.3);
+            color: #ffb74d;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.1rem;
+            color: #00bcd4;
+        }
+        
+        .error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+            color: #ef5350;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+        
+        @media (max-width: 768px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .details-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .details-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="details-container">
+        <div class="details-header">
+            <h1 id="missionTitle">Mission Details</h1>
+            <button class="back-btn" onclick="goBack()">← Back to Dashboard</button>
+        </div>
+
+        <div id="loading" class="loading">Loading mission details...</div>
+        <div id="errorContainer"></div>
+        
+        <div id="missionDetails" style="display: none;">
+             <!-- Mission Image -->
+             <div id="missionImageContainer" style="display: none; margin-bottom: 2rem;">
+                <img id="missionMainImage" class="mission-image" alt="Mission Image" onclick="viewImage(this.src, 'Mission Image')">
+             </div>
+             
+             <!-- Main Details Grid -->
+            <div class="details-grid">
+                <div class="detail-card">
+                    <h3>Mission Information</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">Mission ID:</span>
+                        <span class="detail-value" id="missionId"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Status:</span>
+                        <span class="detail-value" id="missionStatus"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Type:</span>
+                        <span class="detail-value" id="missionType"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Organization:</span>
+                        <span class="detail-value" id="missionOrg"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Budget:</span>
+                        <span class="detail-value" id="missionBudget"></span>
+                    </div>
+                </div>
+
+                <div class="detail-card">
+                    <h3>Timeline</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">Start Date:</span>
+                        <span class="detail-value" id="startDate"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">End Date:</span>
+                        <span class="detail-value" id="endDate"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Duration:</span>
+                        <span class="detail-value" id="duration"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Created:</span>
+                        <span class="detail-value" id="createdAt"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="detail-card" style="margin-bottom: 2rem;">
+                <h3>Description</h3>
+                <p id="missionDescription" style="margin: 0; line-height: 1.6; color: #b0bec5;"></p>
+            </div>
+
+            <!-- Satellites Section -->
+             <div class="detail-card" style="margin-bottom: 2rem;">
+                 <h3>Satellites <span id="satelliteCount">(0)</span></h3>
+                 <div id="satellitesList" class="list-grid"></div>
+             </div>
+
+             <!-- Ground Stations Section -->
+             <div class="detail-card" style="margin-bottom: 2rem;">
+                 <h3>Ground Stations <span id="groundStationCount">(0)</span></h3>
+                 <div id="groundStationsList" class="list-grid"></div>
+             </div>
+
+             <!-- Anomalies Section -->
+             <div class="detail-card" style="margin-bottom: 2rem;">
+                 <h3>Anomalies <span id="anomalyCount">(0)</span></h3>
+                 <div id="anomaliesList" class="list-grid"></div>
+             </div>
+
+             <!-- Crew Logs Section -->
+             <div class="detail-card" style="margin-bottom: 2rem;">
+                 <h3>Crew Logs <span id="crewLogCount">(0)</span></h3>
+                 <div id="crewLogsList" class="list-grid"></div>
+             </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = localStorage.getItem('user');
+            if (!user) {
+                window.location.href = 'login-new.html';
+                return;
+            }
+
+            currentUser = JSON.parse(user);
+            const params = new URLSearchParams(window.location.search);
+            const missionId = params.get('id');
+
+            if (!missionId) {
+                showError('No mission ID provided');
+                return;
+            }
+
+            await loadMissionDetails(missionId);
+        });
+
+        async function loadMissionDetails(missionId) {
+            try {
+                const response = await fetch(`${API_BASE}/missions/${missionId}`, {
+                    headers: { 'Authorization': `Bearer ${currentUser.token}` }
+                });
+
+                if (!response.ok) throw new Error('Failed to load mission');
+
+                const { data } = await response.json();
+                displayMissionDetails(data);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('missionDetails').style.display = 'block';
+            } catch (error) {
+                console.error('Error:', error);
+                showError(error.message);
+            }
+        }
+
+        function displayMissionDetails(data) {
+             const { mission, satellites, ground_stations, anomalies, crew_logs } = data;
+
+            // Header
+            document.getElementById('missionTitle').textContent = mission.mission_name;
+            
+            // Mission Image
+            if (mission.image_url) {
+                const imageContainer = document.getElementById('missionImageContainer');
+                const missionImage = document.getElementById('missionMainImage');
+                missionImage.src = mission.image_url;
+                imageContainer.style.display = 'block';
+            }
+
+            // Mission ID
+            document.getElementById('missionId').textContent = mission.mission_id;
+
+            // Mission Info
+            document.getElementById('missionStatus').innerHTML = 
+                `<span class="status-badge status-${mission.mission_status?.toLowerCase().replace(' ', '-')}">${mission.mission_status}</span>`;
+            document.getElementById('missionType').textContent = mission.mission_type;
+            document.getElementById('missionOrg').textContent = mission.org_name || 'N/A';
+            document.getElementById('missionBudget').textContent = mission.budget ? `$${mission.budget.toLocaleString()}` : 'N/A';
+
+            // Timeline
+            document.getElementById('startDate').textContent = new Date(mission.start_date).toLocaleDateString();
+            document.getElementById('endDate').textContent = new Date(mission.end_date).toLocaleDateString();
+            const days = Math.ceil((new Date(mission.end_date) - new Date(mission.start_date)) / (1000 * 60 * 60 * 24));
+            document.getElementById('duration').textContent = `${days} days`;
+            document.getElementById('createdAt').textContent = new Date(mission.created_at).toLocaleDateString();
+
+            // Description
+            document.getElementById('missionDescription').textContent = mission.mission_description || 'No description provided';
+
+            // Satellites
+             document.getElementById('satelliteCount').textContent = `(${satellites.length})`;
+             const satList = document.getElementById('satellitesList');
+             if (satellites.length > 0) {
+                 satList.innerHTML = satellites.map(s => `
+                     <div class="list-item">
+                         <div class="list-item-title">${s.satellite_name}</div>
+                         <div class="list-item-text">Type: ${s.satellite_type}</div>
+                         <div class="list-item-text">Status: ${s.status}</div>
+                         <div class="list-item-text">Battery: ${s.current_battery_percentage}%</div>
+                         ${s.image_url ? `
+                             <div class="list-item-image">
+                                 <img src="${s.image_url}" alt="${s.satellite_name}" onclick="viewImage('${s.image_url}', 'Satellite: ${s.satellite_name}')">
+                                 <button class="view-image-btn" onclick="viewImage('${s.image_url}', 'Satellite: ${s.satellite_name}')">View Image</button>
+                             </div>
+                         ` : ''}
+                         <button class="view-image-btn" onclick="openSatelliteImageModal(${s.satellite_id})">Add/Edit Image</button>
+                         </div>
+                 `).join('');
+             } else {
+                 satList.innerHTML = '<div class="empty-state">No satellites assigned</div>';
+             }
+
+            // Ground Stations
+            document.getElementById('groundStationCount').textContent = `(${ground_stations.length})`;
+            const gsList = document.getElementById('groundStationsList');
+            if (ground_stations.length > 0) {
+                gsList.innerHTML = ground_stations.map(gs => `
+                    <div class="list-item">
+                        <div class="list-item-title">${gs.station_name}</div>
+                        <div class="list-item-text">Code: ${gs.station_code}</div>
+                        <div class="list-item-text">Country: ${gs.country}</div>
+                        <div class="list-item-text">Status: ${gs.status}</div>
+                        <div class="list-item-text">Uptime: ${gs.uptime_percentage}%</div>
+                        ${gs.image_url ? `
+                            <div class="list-item-image">
+                                <img src="${gs.image_url}" alt="${gs.station_name}" onclick="viewImage('${gs.image_url}', 'Ground Station: ${gs.station_name}')">
+                                <button class="view-image-btn" onclick="viewImage('${gs.image_url}', 'Ground Station: ${gs.station_name}')">View Image</button>
+                            </div>
+                        ` : ''}
+                        <button class="view-image-btn" onclick="openGroundStationImageModal(${gs.station_id || gs.ground_station_id})">Add/Edit Image</button>
+                        </div>
+                `).join('');
+            } else {
+                gsList.innerHTML = '<div class="empty-state">No ground stations assigned</div>';
+            }
+
+            // Anomalies
+             document.getElementById('anomalyCount').textContent = `(${anomalies.length})`;
+             const anomList = document.getElementById('anomaliesList');
+             if (anomalies.length > 0) {
+                 anomList.innerHTML = anomalies.map(a => `
+                     <div class="list-item">
+                         <div class="list-item-title">${a.anomaly_type}</div>
+                         <div class="list-item-text">Severity: <strong>${a.severity}</strong></div>
+                         <div class="list-item-text">Status: ${a.is_resolved ? 'Resolved' : 'Unresolved'}</div>
+                         <div class="list-item-text">${new Date(a.detected_at).toLocaleDateString()}</div>
+                     </div>
+                 `).join('');
+             } else {
+                 anomList.innerHTML = '<div class="empty-state">No anomalies recorded</div>';
+             }
+
+             // Crew Logs
+            document.getElementById('crewLogCount').textContent = `(${crew_logs.length})`;
+            const logList = document.getElementById('crewLogsList');
+            if (crew_logs.length > 0) {
+                logList.innerHTML = crew_logs.map(cl => `
+                    <div class="list-item">
+                        <div class="list-item-title">${cl.crew_member_name || 'Unknown'}</div>
+                        <div class="list-item-text">Role: ${cl.crew_member_role || 'N/A'}</div>
+                        <div class="list-item-text">Date: ${new Date(cl.log_date).toLocaleDateString()}</div>
+                        <div class="list-item-text">${cl.log_description || 'No description'}</div>
+                    </div>
+                `).join('');
+            } else {
+                logList.innerHTML = '<div class="empty-state">No crew logs</div>';
+            }
+        }
+
+        function showError(message) {
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.innerHTML = `<div class="error">${message}</div>`;
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        let imageModalState = { type: null, id: null };
+
+        function openSatelliteImageModal(satelliteId) {
+            imageModalState = { type: 'satellite', id: satelliteId };
+            showImageUpdateModal();
+        }
+
+        function openGroundStationImageModal(stationId) {
+            imageModalState = { type: 'groundstation', id: stationId };
+            showImageUpdateModal();
+        }
+
+        function showImageUpdateModal() {
+            const url = prompt('Enter image URL:');
+            if (!url) return;
+
+            updateItemImage(url);
+        }
+
+        async function updateItemImage(imageUrl) {
+            if (!imageModalState.type || !imageModalState.id) return;
+
+            try {
+                const itemType = imageModalState.type;
+                const itemId = imageModalState.id;
+                const API_BASE = 'http://localhost:5000/api';
+
+                const updateData = { image_url: imageUrl };
+                const endpoint = itemType === 'satellite' 
+                    ? `${API_BASE}/satellites/${itemId}`
+                    : `${API_BASE}/ground-stations/${itemId}`;
+
+                const response = await fetch(endpoint, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${currentUser.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                if (!response.ok) throw new Error('Failed to update image');
+
+                // Reload mission details
+                const params = new URLSearchParams(window.location.search);
+                const missionId = params.get('id');
+                await loadMissionDetails(missionId);
+
+                alert('Image updated successfully');
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error updating image: ' + error.message);
+            }
+        }
+
+        function viewImage(imageUrl, title) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+                cursor: pointer;
+            `;
+
+            const container = document.createElement('div');
+            container.style.cssText = `
+                background: rgba(26, 40, 65, 0.95);
+                padding: 20px;
+                border-radius: 8px;
+                max-width: 90%;
+                max-height: 90vh;
+                overflow: auto;
+                position: relative;
+                cursor: auto;
+                border: 1px solid rgba(0, 188, 212, 0.3);
+            `;
+
+            const header = document.createElement('div');
+            header.style.cssText = `
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid rgba(0, 188, 212, 0.3);
+            `;
+
+            const titleEl = document.createElement('h2');
+            titleEl.textContent = title;
+            titleEl.style.cssText = `
+                color: #00bcd4;
+                margin: 0;
+                font-size: 1.3rem;
+            `;
+
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '✕';
+            closeBtn.style.cssText = `
+                background: none;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+                color: #00bcd4;
+                padding: 0;
+                width: 30px;
+                height: 30px;
+                transition: color 0.3s;
+            `;
+
+            closeBtn.onmouseover = () => closeBtn.style.color = '#4dd0e1';
+            closeBtn.onmouseout = () => closeBtn.style.color = '#00bcd4';
+            closeBtn.onclick = () => modal.remove();
+
+            header.appendChild(titleEl);
+            header.appendChild(closeBtn);
+
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.style.cssText = `
+                max-width: 100%;
+                height: auto;
+                border-radius: 4px;
+            `;
+
+            container.appendChild(header);
+            container.appendChild(img);
+            modal.appendChild(container);
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            };
+
+            document.body.appendChild(modal);
+        }
+    </script>
+</body>
+</html>
